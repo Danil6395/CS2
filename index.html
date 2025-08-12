@@ -3,107 +3,61 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Кейсы — точная анимация (улучшено)</title>
+<title>Кейсы — точная анимация + My Phone</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#071426;
-    --bg-grad-1:#031025;
-    --bg-grad-2:#071426;
-    --panel:#0c1623;
-    --panel-2:#0a1a2b;
-    --accent:#ffb84d;
-    --accent-2:#ffd38f;
-    --muted:#9fb0c8;
-    --good:#42d392;
-    --warn:#ffb84d;
-    --bad:#ff6b6b;
-    /* редкости */
-    --common:#3F5879;
-    --rare:#3F7579;
-    --epic:#753F79;
-    --legend:#79663F;
-    --mythic:#793F3F;
-    --godly:#9EA179;
-    --supreme:#12306C;
-    --extra:#8B7198;
+    --bg:#071426; --bg-grad-1:#031025; --bg-grad-2:#071426;
+    --panel:#0c1623; --accent:#ffb84d; --accent-2:#ffd38f; --muted:#9fb0c8;
+    --common:#3F5879; --rare:#3F7579; --epic:#753F79; --legend:#79663F; --mythic:#793F3F; --godly:#9EA179; --supreme:#12306C; --extra:#8B7198;
   }
 
   *{box-sizing:border-box}
   html,body{height:100%}
   body{
-    margin:0;
-    min-height:100%;
+    margin:0; min-height:100%;
     background:
       radial-gradient(1200px 600px at 10% -10%, rgba(41,126,207,0.16), transparent 40%),
       radial-gradient(1000px 600px at 100% 20%, rgba(255,184,77,0.12), transparent 45%),
       linear-gradient(180deg,var(--bg-grad-1) 0%, var(--bg-grad-2) 100%);
-    color:#eaf6ff;
-    font-family:Inter,system-ui,Segoe UI,Roboto,"Helvetica Neue",Arial;
+    color:#eaf6ff; font-family:Inter,system-ui,Segoe UI,Roboto,"Helvetica Neue",Arial;
     overflow:hidden;
   }
 
-  /* фоновые частицы */
   canvas#bg{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.35}
 
   .wrap{
     position:relative; z-index:1;
-    display:grid;grid-template-columns:320px 1fr 360px;gap:18px;padding:20px;height:100%;
+    display:grid; grid-template-columns:320px 1fr; gap:18px; padding:20px; height:100%;
   }
 
-  /* панель с неон-рамкой и блюром */
   .panel{
     background:linear-gradient(180deg, rgba(12,22,35,0.85), rgba(8,16,28,0.85));
-    border-radius:14px; padding:14px;
-    box-shadow:0 12px 40px rgba(2,6,23,0.45), inset 0 1px 0 rgba(255,255,255,0.04);
-    position:relative; overflow:hidden; backdrop-filter: blur(8px);
+    border-radius:14px; padding:14px; overflow:hidden; backdrop-filter: blur(8px);
     border:1px solid rgba(255,255,255,0.06);
+    box-shadow:0 12px 40px rgba(2,6,23,0.45), inset 0 1px 0 rgba(255,255,255,0.04);
+    position:relative;
   }
   .panel:before{
-    content:""; position:absolute; inset:-1px;
-    border-radius:14px;
-    padding:1px;
+    content:""; position:absolute; inset:-1px; border-radius:14px; padding:1px;
     background:conic-gradient(from 0deg, rgba(255,184,77,.35), rgba(61,142,255,.35), rgba(255,184,77,.35));
-    -webkit-mask:
-      linear-gradient(#000 0 0) content-box,
-      linear-gradient(#000 0 0);
-    -webkit-mask-composite: xor; mask-composite: exclude;
-    opacity:.35; pointer-events:none;
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor; mask-composite: exclude; opacity:.35; pointer-events:none;
   }
 
-  h1,h2{margin:0 0 10px 0}
-  h2{font-size:16px; letter-spacing:.2px}
-  .title{
-    display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;
-  }
-  .brand{
-    font-weight:700; letter-spacing:.4px;
-    background:linear-gradient(90deg, #dff3ff, #ffd38f, #dff3ff);
-    -webkit-background-clip:text; background-clip:text; color:transparent;
-    animation:shineText 8s linear infinite;
-  }
-  @keyframes shineText{
-    from{background-position:0% 50%} to{background-position:200% 50%}
-  }
-
+  h2{margin:0 0 10px 0; font-size:16px}
   .balance{font-size:22px;font-weight:700;color:var(--accent)}
   .muted{color:var(--muted);font-size:13px;}
+  .row{display:flex;align-items:center;justify-content:space-between;gap:8px}
+  .sep{margin:12px 0;border:0;border-top:1px solid rgba(255,255,255,0.06)}
 
   /* кнопки */
-  .controls{display:flex;gap:8px;flex-wrap:wrap}
-  button{
-    appearance:none; border:0; cursor:pointer;
-    border-radius:10px; padding:10px 14px; font-weight:700;
-    color:rgb(180, 129, 0); background:linear-gradient(180deg, var(--accent), var(--accent-2));
-    box-shadow:0 6px 20px rgba(255,184,77,0.25);
-    transition:transform .12s ease, box-shadow .12s ease, filter .12s ease, opacity .2s ease;
-  }
-  button:hover{transform:translateY(-1px); filter:saturate(1.08)}
-  button:active{transform:translateY(0); box-shadow:0 4px 14px rgba(255,184,77,0.2)}
-  button:disabled{opacity:.55; cursor:not-allowed}
-
+  button{appearance:none;border:0;cursor:pointer;border-radius:10px;padding:10px 14px;font-weight:700;transition:transform .12s, box-shadow .12s, filter .12s, opacity .2s}
+  button:hover{transform:translateY(-1px)}
+  button:active{transform:translateY(0)}
+  button:disabled{opacity:.55;cursor:not-allowed}
+  #openCase, .btn-primary{color:rgb(152, 86, 0); background:linear-gradient(180deg, var(--accent), var(--accent-2)); box-shadow:0 6px 20px rgba(255,184,77,0.25)}
   .btn-ghost{background:rgba(255,255,255,0.06); color:#cfe8ff; box-shadow:none; border:1px solid rgba(255,255,255,0.07)}
-  .btn-ghost:hover{background:rgba(255,255,255,0.09)}
   .btn-danger{background:linear-gradient(180deg,#ff7a7a,#ff5a5a); color:#270d0d; box-shadow:0 6px 18px rgba(255,90,90,.25)}
   .btn-green{background:linear-gradient(180deg,#50e3a4,#38d087); color:#052117; box-shadow:0 6px 18px rgba(80,227,164,.22)}
 
@@ -123,15 +77,18 @@
   .case-btn:hover:after{opacity:1}
   .case-btn.active{box-shadow:inset 0 0 0 2px rgba(255,184,77,0.22), 0 8px 22px rgba(255,184,77,0.12)}
 
+  /* вкладки в правой панели */
+  .tabs{display:flex; gap:8px; margin-bottom:10px}
+  .tab-btn{background:rgba(255,255,255,.05); color:#d8eaff; border:1px solid rgba(255,255,255,.06)}
+  .tab-btn.active{background:linear-gradient(180deg, #2a3d58, #1b2a42); border-color:rgba(255,255,255,.12)}
+
   /* OPENER */
   .opener{
     width:100%; height:170px;
     background:linear-gradient(180deg,#041026,#072439);
     border-radius:12px; display:block; position:relative; overflow:hidden;
     border:1px solid rgba(255,255,255,0.06);
-    box-shadow:
-      inset 0 -20px 40px rgba(2,6,20,0.4),
-      0 12px 28px rgba(2,6,20,0.45);
+    box-shadow: inset 0 -20px 40px rgba(2,6,20,0.4), 0 12px 28px rgba(2,6,20,0.45);
   }
   .ticker{position:absolute;left:0;top:0;height:100%;display:flex;align-items:center;will-change:transform}
   .slot{
@@ -139,11 +96,15 @@
     display:flex; align-items:center; justify-content:center; flex-shrink:0;
     border:1px solid rgba(255,255,255,0.06);
     box-shadow:0 10px 24px rgba(2,8,20,0.6), inset 0 1px 0 rgba(255,255,255,0.04);
-    transition:transform .12s ease, box-shadow .2s ease;
   }
-  .slot:hover{transform:translateY(-2px); box-shadow:0 14px 28px rgba(2,8,20,0.7)}
   .slot .title{font-weight:600;text-align:center;font-size:13px}
   .slot .rar{font-size:12px; opacity:.9}
+  .slot.win{
+    outline:2px solid rgba(255,184,77,.7);
+    box-shadow:0 0 0 2px rgba(255,184,77,.12), 0 0 24px rgba(255,184,77,.35), inset 0 1px 0 rgba(255,255,255,0.06);
+    animation:winPulse 1.5s ease-in-out 2;
+  }
+  @keyframes winPulse{ 0%{filter:brightness(1)} 50%{filter:brightness(1.15)} 100%{filter:brightness(1)} }
 
   .viewport{
     position:absolute;left:50%;top:0;transform:translateX(-50%);
@@ -151,31 +112,16 @@
     border-left:2px solid rgba(255,255,255,0.06);border-right:2px solid rgba(255,255,255,0.06);
     box-shadow:inset 0 12px 40px rgba(2,6,20,0.35);
   }
-  /* центр-индикатор */
   .viewport:after{
     content:""; position:absolute; left:50%; top:0; transform:translateX(-50%);
     width:0; height:0; border-left:7px solid transparent; border-right:7px solid transparent; border-top:10px solid var(--accent);
     filter:drop-shadow(0 6px 10px rgba(255,184,77,.35));
   }
 
-  /* инвентарь */
-  #inventory{max-height:56vh; overflow:auto; padding-right:4px}
-  .inventory .item{
-    display:flex; align-items:center; justify-content:space-between; gap:8px;
-    padding:10px; border-radius:10px;
-    background:linear-gradient(90deg, rgba(255,255,255,0.03), transparent);
-    border:1px solid rgba(255,255,255,0.06);
-    transition:background .2s ease, transform .12s ease;
-  }
-  .inventory .item:hover{transform:translateY(-1px); background:linear-gradient(90deg, rgba(255,255,255,0.05), transparent)}
-  .rarity-badge{
-    font-size:11px; padding:3px 8px; border-radius:999px; border:1px solid rgba(255,255,255,.12);
-    background:rgba(255,255,255,.06)
-  }
-
   .recent{white-space:pre-line;font-size:13px;color:var(--muted); max-height:200px; overflow:auto; padding-right:4px}
+  .info{min-height:120px}
 
-  /* подсветки редкости */
+  /* glow по редкости */
   .glow-common{box-shadow:0 0 0 1px rgba(255,255,255,0.06), 0 0 16px rgba(63,88,121,.25) inset !important}
   .glow-rare{box-shadow:0 0 0 1px rgba(255,255,255,0.06), 0 0 20px rgba(63,117,121,.35) inset !important}
   .glow-epic{box-shadow:0 0 0 1px rgba(255,255,255,0.06), 0 0 24px rgba(117,63,121,.45) inset !important}
@@ -185,16 +131,83 @@
   .glow-supreme{box-shadow:0 0 0 1px rgba(255,255,255,0.06), 0 0 36px rgba(18,48,108,.55) inset !important}
   .glow-extra{box-shadow:0 0 0 1px rgba(255,255,255,0.06), 0 0 40px rgba(139,113,152,.6) inset !important}
 
-  /* мелочи */
-  .row{display:flex; align-items:center; justify-content:space-between; gap:8px}
-  .sep{margin:12px 0;border:0;border-top:1px solid rgba(255,255,255,0.06)}
-  .info{min-height:120px}
+  /* FAB и нижний инвентарь */
+  .fab{
+    position:fixed; right:20px; bottom:20px; z-index:7;
+    background:linear-gradient(180deg, var(--accent), var(--accent-2)); color:#052107;
+    box-shadow:0 10px 24px rgba(255,184,77,.25);
+  }
+  .scrim{
+    position:fixed; inset:0; background:rgba(0,0,0,.45); z-index:8;
+    opacity:0; pointer-events:none; transition:opacity .22s ease;
+  }
+  .scrim.show{opacity:1; pointer-events:auto}
+  .drawer{
+    position:fixed; left:0; right:0; bottom:0; z-index:9;
+    background:linear-gradient(180deg, rgba(12,22,35,.96), rgba(8,16,28,.96));
+    border-top:1px solid rgba(255,255,255,.08);
+    border-radius:16px 16px 0 0; padding:14px 16px 16px;
+    transform:translateY(100%); transition:transform .28s cubic-bezier(.2,.9,.2,1);
+    max-height:70vh; display:flex; flex-direction:column; gap:10px;
+    box-shadow:0 -12px 32px rgba(2,8,20,.6), inset 0 1px 0 rgba(255,255,255,.06);
+  }
+  .drawer.open{transform:translateY(0)}
+  #inventory{overflow:auto; padding-right:6px}
+  .inventory .item{
+    display:flex; align-items:center; justify-content:space-between; gap:8px;
+    padding:10px; border-radius:10px;
+    background:linear-gradient(90deg, rgba(255,255,255,0.03), transparent);
+    border:1px solid rgba(255,255,255,0.06);
+  }
+  .rarity-badge{font-size:11px; padding:3px 8px; border-radius:999px; border:1px solid rgba(255,255,255,.12); background:rgba(255,255,255,.06)}
+
+  /* My Phone */
+  #tab-phone .phone-wrap{display:grid; grid-template-columns:1fr 320px; gap:14px}
+  #tab-phone .phone-sil{
+    min-height:240px; border-radius:18px;
+    background:linear-gradient(180deg, rgba(10,20,34,.6), rgba(10,20,34,.3));
+    border:1px solid rgba(255,255,255,.06);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.06);
+    display:flex; align-items:center; justify-content:center; position:relative; overflow:hidden;
+  }
+  #tab-phone .phone-sil:after{
+    pointer-events: none;
+    content:""; position:absolute; inset:14px; border-radius:22px;
+    border:1px dashed rgba(255,255,255,.08);
+  }
+  .slot-card{
+    background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+    border:1px solid rgba(255,255,255,.06); border-radius:12px; padding:12px;
+    display:flex; gap:10px; align-items:center;
+  }
+  .slot-card img{width:56px;height:56px;object-fit:contain;filter: drop-shadow(0 6px 10px rgba(0,0,0,.35))}
+  .slot-card .placeholder{
+    width:56px;height:56px;border-radius:12px;background:rgba(255,255,255,.04);display:flex;align-items:center;justify-content:center;color:#9fb0c8;border:1px dashed rgba(255,255,255,.06)
+  }
+  .stat{
+    background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.06); border-radius:10px; padding:10px; font-size:13px; color:#cfe8ff;
+  }
+  .picker{
+    position:fixed; inset:0; z-index:11; display:none; align-items:center; justify-content:center;
+  }
+  .picker.show{display:flex}
+  .picker .back{position:absolute; inset:0; background:rgba(0,0,0,.5)}
+  .picker .panel{
+    position:relative; width:min(720px, 92vw); max-height:80vh; overflow:auto;
+    background:linear-gradient(180deg, rgba(12,22,35,.98), rgba(8,16,28,.98));
+    border:1px solid rgba(255,255,255,.08); border-radius:14px; padding:14px;
+    box-shadow:0 20px 44px rgba(0,0,0,.6);
+  }
+  .picker .grid{display:grid; grid-template-columns:repeat(auto-fill, minmax(220px, 1fr)); gap:10px}
+  .item-eq{font-size:11px; padding:2px 6px; border-radius:999px; background:rgba(80,227,164,.12); border:1px solid rgba(80,227,164,.24); color:#9ff3c9}
+  .badge-warn{font-size:11px; padding:2px 6px; border-radius:999px; background:rgba(255,184,77,.12); border:1px solid rgba(255,184,77,.24); color:#ffd9a2}
 
   /* адаптив */
   @media (max-width:1100px){
     .wrap{grid-template-columns:1fr; height:auto}
     body{overflow:auto}
-    #cases, #inventory{max-height:none}
+    #cases{max-height:none}
+    #tab-phone .phone-wrap{grid-template-columns:1fr}
   }
 </style>
 </head>
@@ -203,126 +216,179 @@
 
 <div class="wrap">
   <div class="panel">
-    <div class="title">
-      <h2 class="brand">Case Studio</h2>
-      <button id="toggleSound" class="btn-ghost" title="Звук вкл/выкл">🔊 Звук</button>
-    </div>
-
     <div class="row">
       <div>
-        <h2>Баланс</h2>
+        <h2>Balance</h2>
         <div class="balance" id="balance">$1000</div>
       </div>
     </div>
+
     <hr class="sep">
-    <h2>Кейсы</h2>
+    <h2>Cases</h2>
     <div id="cases"></div>
 
     <hr class="sep">
     <div class="row">
-      <h2>Шансы (веса)</h2>
-      <button id="viewProb" class="btn-ghost">Показать/скрыть</button>
+      <h2>Chances (%)</h2>
+      <button id="viewProb" class="btn-ghost">See/invisible</button>
     </div>
     <div id="probList" class="muted" style="font-size:13px; display:none"></div>
   </div>
 
   <div class="panel">
-    <div class="title">
-      <h2>Открытие кейса</h2>
-      <div class="muted">Последние: <span id="lastDrop">—</span></div>
-    </div>
-
-    <div class="opener" id="opener">
-      <div class="ticker" id="ticker"></div>
-      <div class="viewport"></div>
-    </div>
-
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px;gap:8px;flex-wrap:wrap">
-      <div class="controls">
-        <button id="openCase">Открыть кейс</button>
-        <button id="fastOpen" class="btn-ghost">Быстро</button>
-        <button id="autoFive" class="btn-ghost" title="Открыть 5 раз быстро">x5</button>
+    <div class="row">
+      <div class="tabs">
+        <button id="tabBtnCases" class="tab-btn active">Cases</button>
+        <button id="tabBtnPhone" class="tab-btn">My Phone</button>
       </div>
-      <div class="muted">Горячие клавиши: Space — открыть, F — быстро</div>
+      <div class="muted">Last: <span id="lastDrop">—</span></div>
     </div>
 
-    <div style="margin-top:12px;display:flex;gap:12px;flex-wrap:wrap">
-      <div style="flex:1;min-width:260px">
-        <h2>Инфо</h2>
-        <div id="caseInfo" class="muted info">Выберите кейс слева</div>
+    <!-- TAB: Cases -->
+    <div id="tab-cases">
+      <div class="opener" id="opener">
+        <div class="ticker" id="ticker"></div>
+        <div class="viewport"></div>
       </div>
-      <div style="width:280px;flex:0 0 auto">
-        <h2>Последние выпавшие</h2>
-        <div id="recent" class="recent">Пусто</div>
+
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px;gap:8px;flex-wrap:wrap">
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button id="openCase" class="btn-primary">Open Case</button>
+          <button id="fastOpen" class="btn-ghost">Fast</button>
+          <button id="autoFive" class="btn-ghost" title="Open 5 Cases">x5</button>
+        </div>
+        <div class="muted">Space — open case, F — fast mode</div>
+      </div>
+
+      <div style="margin-top:12px;display:flex;gap:12px;flex-wrap:wrap">
+        <div style="flex:1;min-width:260px">
+          <h2>Info</h2>
+          <div id="caseInfo" class="muted info">Choose Case</div>
+        </div>
+        <div style="width:280px;flex:0 0 auto">
+          <h2>Last Hatched</h2>
+          <div id="recent" class="recent">None</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB: My Phone -->
+    <div id="tab-phone" style="display:none">
+      <div class="phone-wrap">
+        <div>
+          <div class="phone-sil">
+            <div style="text-align:center">
+              <div class="muted" style="margin-bottom:8px">Make Phone</div>
+              <div style="display:grid; gap:10px">
+                <div class="slot-card" id="slot-cpu"></div>
+                <div class="slot-card" id="slot-mem"></div>
+                <div class="slot-card" id="slot-cam"></div>
+                <div class="slot-card" id="slot-col"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <h2>Income</h2>
+          <div class="stat" id="incomeStat">
+            Base income: — / Boosts: — × — / Farm: —
+          </div>
+          <div style="display:flex; gap:8px; margin-top:10px">
+            <button id="collectBtn" class="btn-primary">Collect</button>
+            <button id="unequipAll" class="btn-ghost">Unequip</button>
+          </div>
+          <div class="muted" style="margin-top:8px" id="equipHint">
+            PS: choose details in inventory. Equiped items dont sell.
+          </div>
+        </div>
       </div>
     </div>
   </div>
+</div>
 
-  <div class="panel">
-    <div class="row">
-      <h2>Инвентарь</h2>
-      <button id="sellAll" class="btn-danger">Продать всё</button>
+<!-- FAB и нижний инвентарь -->
+<button id="toggleInv" class="fab">Inventory</button>
+<div id="scrim" class="scrim"></div>
+<div id="drawer" class="drawer">
+  <div class="row">
+    <h2>Inventory</h2>
+    <div style="display:flex;gap:8px;align-items:center">
+      <select id="invSort" class="btn-ghost" style="padding:8px 10px">
+        <option value="newest">Newest</option>
+        <option value="rarity">Rarity</option>
+        <option value="type">Type</option>
+        <option value="name">Name</option>
+        <option value="value">Value</option>
+      </select>
+      <button id="invSortDir" class="btn-ghost" title="Toggle sort direction">Desc</button>
+      <button id="sellAll" class="btn-danger">Sell all</button>
+      <button id="closeDrawer" class="btn-ghost">Close</button>
     </div>
-    <div id="inventory" class="inventory"></div>
+  </div>
+  <div id="inventory" class="inventory"></div>
+</div>
+
+<!-- Пикер выбора предмета -->
+<div id="picker" class="picker">
+  <div class="back"></div>
+  <div class="panel">
+    <div class="row" style="margin-bottom:8px">
+      <h2 id="pickerTitle">Choose</h2>
+      <button id="pickerClose" class="btn-ghost">Close</button>
+    </div>
+    <div id="pickerGrid" class="grid"></div>
   </div>
 </div>
 
 <script>
-/*
-  Что добавлено:
-  - Неоновый дизайн, блюр-панели, градиентная обводка, подсветка редкости.
-  - Частицы на фоне, конфетти при выигрыше и звук (вкл/выкл).
-  - Кнопка авто-открытия x5, горячие клавиши (Space/F).
-  - Улучшения UX: активное состояние кейса, плавные ховеры, компактные списки.
-*/
-
+/* кейсы */
 const CASES = [
   {id:'android1', name:'Кейс Android', price:10, items:[
-    {id:'c11',name:'Snapdracon 425',rarity:'common',value:3,color:'#3F5879',weight:30.71, img:'ProcessorLogo/snap425.png'},
-    {id:'c12',name:'Snapdracon 435',rarity:'common',value:7,color:'#3F5879',weight:30.71, img:'ProcessorLogo/snap435.png'},
-    {id:'r11',name:'Halio A22',rarity:'rare',value:15,color:'#3F7579',weight:9.71, img:'ProcessorLogo/mediaha22.png'},
-    {id:'r12',name:'Exunos 7885',rarity:'rare',value:15,color:'#3F7579',weight:9.71, img:'ProcessorLogo/exynos7885.png'},
-    {id:'e11',name:'Halio G70',rarity:'epic',value:50,color:'#753F79',weight:4.86, img:'ProcessorLogo/mediahg70.png'},
-    {id:'e12',name:'Snapdracon 662',rarity:'epic',value:50,color:'#753F79',weight:4.86, img:'ProcessorLogo/snap662.png'},
-    {id:'l11',name:'Snapdracon 710',rarity:'legend',value:100,color:'#79663F',weight:1.429, img:'ProcessorLogo/snap710.png'},
-    {id:'m11',name:'Snapdracon 6sG3',rarity:'mythic',value:1500,color:'#793F3F',weight:0.01, img:'ProcessorLogo/snap6sg3.png'},
-    {id:'g11',name:'Snapdracon 888',rarity:'godly',value:30000,color:'#9EA179',weight:0.001, img:'ProcessorLogo/snap888.png'},
+    {id:'c11',name:'Snapdracon 425',rarity:'common',value:3, income:0.003,color:'#3F5879',weight:30.71, img:'ProcessorLogo/snap425.png'},
+    {id:'c12',name:'Snapdracon 435',rarity:'common',value:7, income:0.007,color:'#3F5879',weight:30.71, img:'ProcessorLogo/snap435.png'},
+    {id:'r11',name:'Halio A22',rarity:'rare',value:15, income:0.015,color:'#3F7579',weight:9.71, img:'ProcessorLogo/mediaha22.png'},
+    {id:'r12',name:'Exunos 7885',rarity:'rare',value:15, income:0.015,color:'#3F7579',weight:9.71, img:'ProcessorLogo/exynos7885.png'},
+    {id:'e11',name:'Halio G70',rarity:'epic',value:50, income:0.05,color:'#753F79',weight:4.86, img:'ProcessorLogo/mediahg70.png'},
+    {id:'e12',name:'Snapdracon 662',rarity:'epic',value:50, income:0.05,color:'#753F79',weight:4.86, img:'ProcessorLogo/snap662.png'},
+    {id:'l11',name:'Snapdracon 710',rarity:'legend',value:100, income:0.1,color:'#79663F',weight:1.429, img:'ProcessorLogo/snap710.png'},
+    {id:'m11',name:'Snapdracon 6sG3',rarity:'mythic',value:1500, income:1.5,color:'#793F3F',weight:0.01, img:'ProcessorLogo/snap6sg3.png'},
+    {id:'g11',name:'Snapdracon 888',rarity:'godly',value:30000, income:30,color:'#9EA179',weight:0.001, img:'ProcessorLogo/snap888.png'},
   ]},
-  {id:'snapdragon1', name:'Кейс Snapdragon', price:25, items:[
-    {id:'c41',name:'Snapdracon 625',rarity:'common',value:8,color:'#3F5879',weight:34.21, img:'ProcessorLogo/snap625.png'},
-    {id:'c42',name:'Snapdracon 450',rarity:'common',value:9,color:'#3F5879',weight:34.21, img:'ProcessorLogo/snap450.png'},
-    {id:'r41',name:'Snapdracon 460',rarity:'rare',value:35,color:'#3F7579',weight:9.56, img:'ProcessorLogo/snap460.png'},
-    {id:'r42',name:'Snapdracon 821',rarity:'rare',value:30,color:'#3F7579',weight:9.56, img:'ProcessorLogo/snap821.png'},
-    {id:'e41',name:'Snapdracon 670',rarity:'epic',value:75,color:'#753F79',weight:4.82, img:'ProcessorLogo/snap670.png'},
-    {id:'e42',name:'Snapdracon 662',rarity:'epic',value:50,color:'#753F79',weight:4.82, img:'ProcessorLogo/snap662.png'},
-    {id:'l41',name:'Snapdracon 4sG2',rarity:'legend',value:400,color:'#79663F',weight:1.398245, img:'ProcessorLogo/snap4sg2.png'},
-    {id:'l42',name:'Snapdracon 765G',rarity:'legend',value:750,color:'#79663F',weight:1.398245, img:'ProcessorLogo/snap765g.png'},
-    {id:'m41',name:'Snapdracon 6sG3',rarity:'mythic',value:1500,color:'#793F3F',weight:0.01, img:'ProcessorLogo/snap6sg3.png'},
-    {id:'m42',name:'Snapdracon 7sG2',rarity:'mythic',value:3750,color:'#793F3F',weight:0.01, img:'ProcessorLogo/snap7sg2.png'},
-    {id:'g41',name:'Snapdracon 888+',rarity:'godly',value:35000,color:'#9EA179',weight:0.001, img:'ProcessorLogo/snap888plus.png'},
-    {id:'g42',name:'Snapdracon 8G1',rarity:'godly',value:90000,color:'#9EA179',weight:0.001, img:'ProcessorLogo/snap8g1.png'},
-    {id:'s41',name:'Snapdracon 8sG3',rarity:'supreme',value:160000,color:'#12306C',weight:0.0005, img:'ProcessorLogo/snap8sg3.png'},
-    {id:'ex41',name:'Snapdracon 8E',rarity:'extra',value:1000000,color:'#8B7198',weight:0.00001, img:'ProcessorLogo/snap8elite.png'},
+  {id:'snapdragon1', name:'Кейс Snapdragon', price:150, items:[
+    {id:'c41',name:'Snapdracon 625',rarity:'common',value:8, income:0.008,color:'#3F5879',weight:34.21, img:'ProcessorLogo/snap625.png'},
+    {id:'c42',name:'Snapdracon 450',rarity:'common',value:9, income:0.009,color:'#3F5879',weight:34.21, img:'ProcessorLogo/snap450.png'},
+    {id:'r41',name:'Snapdracon 460',rarity:'rare',value:35, income:0.035,color:'#3F7579',weight:9.56, img:'ProcessorLogo/snap460.png'},
+    {id:'r42',name:'Snapdracon 821',rarity:'rare',value:30, income:0.03,color:'#3F7579',weight:9.56, img:'ProcessorLogo/snap821.png'},
+    {id:'e41',name:'Snapdracon 670',rarity:'epic',value:75, income:0.075,color:'#753F79',weight:4.82, img:'ProcessorLogo/snap670.png'},
+    {id:'e42',name:'Snapdracon 662',rarity:'epic',value:50, income:0.05,color:'#753F79',weight:4.82, img:'ProcessorLogo/snap662.png'},
+    {id:'l41',name:'Snapdracon 4sG2',rarity:'legend',value:400, income:0.4,color:'#79663F',weight:1.398245, img:'ProcessorLogo/snap4sg2.png'},
+    {id:'l42',name:'Snapdracon 765G',rarity:'legend',value:750, income:0.75,color:'#79663F',weight:1.398245, img:'ProcessorLogo/snap765g.png'},
+    {id:'m41',name:'Snapdracon 6sG3',rarity:'mythic',value:1500, income:1.5,color:'#793F3F',weight:0.01, img:'ProcessorLogo/snap6sg3.png'},
+    {id:'m42',name:'Snapdracon 7sG2',rarity:'mythic',value:3750, income:3.75,color:'#793F3F',weight:0.01, img:'ProcessorLogo/snap7sg2.png'},
+    {id:'g41',name:'Snapdracon 888+',rarity:'godly',value:35000, income:35,color:'#9EA179',weight:0.001, img:'ProcessorLogo/snap888plus.png'},
+    {id:'g42',name:'Snapdracon 8G1',rarity:'godly',value:90000, income:90,color:'#9EA179',weight:0.001, img:'ProcessorLogo/snap8g1.png'},
+    {id:'s41',name:'Snapdracon 8sG3',rarity:'supreme',value:160000, income:160,color:'#12306C',weight:0.0005, img:'ProcessorLogo/snap8sg3.png'},
+    {id:'ex41',name:'Snapdracon 8E',rarity:'extra',value:1000000, income:1000,color:'#8B7198',weight:0.00001, img:'ProcessorLogo/snap8elite.png'},
   ]},
   {id:'ios1', name:'Кейс iOS', price:150, items:[
-    {id:'e21',name:'Appla A9',rarity:'epic',value:75,color:'#753F79',weight:69.9885, img:'ProcessorLogo/applea9.png'},
-    {id:'l21',name:'A10 Fusion',rarity:'legend',value:200,color:'#79663F',weight:30, img:'ProcessorLogo/applea10f.png'},
-    {id:'m21',name:'A11 Bionic',rarity:'mythic',value:3000,color:'#793F3F',weight:0.01, img:'ProcessorLogo/applea11b.png'},
-    {id:'g21',name:'A12 Bionic',rarity:'godly',value:10000,color:'#9EA179',weight:0.001, img:'ProcessorLogo/applea12b.png'},
-    {id:'s21',name:'A15 Bionic',rarity:'supreme',value:205000,color:'#12306C',weight:0.0005, img:'ProcessorLogo/applea15b.png'}
+    {id:'e21',name:'Appla A9',rarity:'epic',value:75, income:0.075,color:'#753F79',weight:69.9885, img:'ProcessorLogo/applea9.png'},
+    {id:'l21',name:'A10 Fusion',rarity:'legend',value:200, income:0.2,color:'#79663F',weight:30, img:'ProcessorLogo/applea10f.png'},
+    {id:'m21',name:'A11 Bionic',rarity:'mythic',value:3000, income:3,color:'#793F3F',weight:0.01, img:'ProcessorLogo/applea11b.png'},
+    {id:'g21',name:'A12 Bionic',rarity:'godly',value:10000, income:10,color:'#9EA179',weight:0.001, img:'ProcessorLogo/applea12b.png'},
+    {id:'s21',name:'A15 Bionic',rarity:'supreme',value:205000, income:205,color:'#12306C',weight:0.0005, img:'ProcessorLogo/applea15b.png'}
   ]},
   {id:'vivo1', name:'Кейс VIVO-X200ultra', price:1000, items:[
-    {id:'l31',name:'halio G100',rarity:'legend',value:900,color:'#79663F',weight:99.98949, img:'ProcessorLogo/mediahg100.png'},
+    {id:'l31',name:'halio G100',rarity:'legend',value:900, income:0.9,color:'#79663F',weight:99.98949, img:'ProcessorLogo/mediahg100.png'},
     {id:'m31',name:'eSTR 12|256GB',rarity:'mythic',value:8800,color:'#793F3F',weight:0.01, img:'StorageLogo/12-256GB.png'},
     {id:'s31',name:'MT 50|200|50MP',rarity:'supreme',value:256000,color:'#9EA179',weight:0.0005, img:'CamLogo/cam50+200+50MP.png'},
-    {id:'ex31',name:'Snapdracon 8E',rarity:'extra',value:1000000,color:'#12306C',weight:0.00001, img:'ProcessorLogo/snap8elite.png'}
+    {id:'ex31',name:'Snapdracon 8E',rarity:'extra',value:1000000, income:1000,color:'#12306C',weight:0.00001, img:'ProcessorLogo/snap8elite.png'}
   ]},
   {id:'cameras1', name:'Кейс Cameras', price:100, items:[
     {id:'c51',name:'Main 12MP',rarity:'common',value:50,color:'#3F5879',weight:60.42, img:'CamLogo/cam12mp.png'},
     {id:'r51',name:'Main 14MP',rarity:'rare',value:125,color:'#3F7579',weight:28.12, img:'CamLogo/cam14mp.png'},
     {id:'e51',name:'Main 16MP',rarity:'epic',value:500,color:'#753F79',weight:7.63, img:'CamLogo/cam16mp.png'},
     {id:'l51',name:'MainMAC 16|4MP',rarity:'legend',value:850,color:'#79663F',weight:3.81849, img:'CamLogo/cam16+4mp.png'},
-    {id:'m51',name:'MainMAC 24|8MP',rarity:'mythic',value:5500,color:'#793F3F',weight:0.01, img:'CamLogo/cam24+8mp.png'},
+    {id:'m51',name:'MainMAC 24|8MP',rarity:'mythic',value:5500,color:'#793F3F',weight:0.01, img:'CamLogo/cam24+8+2mp.png'},
     {id:'g51',name:'MainU 48|8|2MP',rarity:'godly',value:85000,color:'#9EA179',weight:0.001, img:'CamLogo/cam48+8+2mp.png'},
     {id:'s51',name:'MTU 52|8|8|2MP',rarity:'supreme',value:280000,color:'#12306C',weight:0.0005, img:'CamLogo/cam52+8+8+2mp.png'},
     {id:'ex51',name:'MTUs 128|64MP',rarity:'extra',value:980000,color:'#8B7198',weight:0.00001, img:'CamLogo/cam128+64mp.png'}
@@ -337,16 +403,27 @@ const CASES = [
     {id:'g61',name:'STRs 16|128GB',rarity:'godly',value:115000,color:'#9EA179',weight:0.001, img:'StorageLogo/16-128GB.png'},
     {id:'s61',name:'STRs 16|256GB',rarity:'supreme',value:570000,color:'#12306C',weight:0.0005, img:'StorageLogo/16-256GB.png'},
     {id:'ex61',name:'eSTRs 32|256GB',rarity:'extra',value:1100000,color:'#8B7198',weight:0.00001, img:'StorageLogo/32-256GB.png'}
+  ]},
+    {id:'cooler1', name:'Кейс Cooler', price:500, items:[
+    {id:'l61',name:'Cooler 1.0',rarity:'legend',value:350,color:'#79663F',weight:89.849, img:'CoolerLogo/cool1.png'},
+    {id:'m61',name:'Cooler 2.0',rarity:'mythic',value:2000,color:'#793F3F',weight:10, img:'CoolerLogo/cool2.png'},
+    {id:'g61',name:'Cooler 3.0',rarity:'godly',value:9000,color:'#9EA179',weight:0.1, img:'CoolerLogo/cool3.png'},
+    {id:'s61',name:'Cooler 4.0',rarity:'supreme',value:50000,color:'#12306C',weight:0.05, img:'CoolerLogo/cool4.png'},
+    {id:'ex61',name:'Cooler V',rarity:'extra',value:225000,color:'#8B7198',weight:0.001, img:'CoolerLogo/cool5.png'}
   ]}
 ];
 
-/* состояния (persist) */
+/* состояние */
 let state = {
   balance: Number(localStorage.getItem('balance')||1000),
   inventory: JSON.parse(localStorage.getItem('inv')||'[]'),
   recent: JSON.parse(localStorage.getItem('recent')||'[]'),
   selectedCase: localStorage.getItem('selCase') || CASES[0].id,
-  sound: JSON.parse(localStorage.getItem('sound') ?? 'true')
+  sound: JSON.parse(localStorage.getItem('sound') ?? 'true'),
+  phone: JSON.parse(localStorage.getItem('phone') || '{"cpu":null,"mem":null,"cam":null,"col":null}'),
+  phoneProg: JSON.parse(localStorage.getItem('phoneProg') || '{"lastAccrual":'+Date.now()+',"pending":0}'),
+  invSort: localStorage.getItem('invSort') || 'newest',
+  invSortDir: localStorage.getItem('invSortDir') || 'desc'
 };
 function saveState(){
   localStorage.setItem('balance', state.balance);
@@ -354,28 +431,100 @@ function saveState(){
   localStorage.setItem('recent', JSON.stringify(state.recent));
   localStorage.setItem('selCase', state.selectedCase);
   localStorage.setItem('sound', JSON.stringify(state.sound));
+  localStorage.setItem('phone', JSON.stringify(state.phone));
+  localStorage.setItem('phoneProg', JSON.stringify(state.phoneProg));
+  localStorage.setItem('invSort', state.invSort);
+  localStorage.setItem('invSortDir', state.invSortDir);
 }
 
-/* помощь */
+/* утилиты */
 function weightedPick(items){
   const total = items.reduce((s,i)=>s+i.weight,0);
   let r=Math.random()*total;
   for(const it of items){ if(r < it.weight) return it; r -= it.weight; }
   return items[items.length-1];
 }
+function rarityLabel(r){ return {common:'Common',rare:'Rare',epic:'Epic',legend:'Legend',mythic:'Mythic',godly:'Godly',supreme:'Supreme',extra:'Extra'}[r] || r; }
+function rarityGlowClass(r){ return 'glow-'+r; }
+function slotOf(it){
+  const p = (it.img||'');
+  if(p.includes('ProcessorLogo')) return 'cpu';
+  if(p.includes('StorageLogo')) return 'mem';
+  if(p.includes('CamLogo')) return 'cam';
+  if(p.includes('CoolerLogo')) return 'col';
+  const n = (it.name||'').toLowerCase();
+  if(n.includes('snap') || n.includes('a9') || n.includes('bionic') || n.includes('exynos') || n.includes('halio')) return 'cpu';
+  if(n.includes('gb')) return 'mem';
+  if(n.includes('mp')) return 'cam';
+  if(n.includes('cooler')) return 'col';
+  return null;
+}
+function fmtMoney(n){ return '$' + Number(n).toLocaleString('en-US'); }
 
-/* элементы */
+/* DOM */
 const casesEl = document.getElementById('cases');
 const opener = document.getElementById('opener');
 const ticker = document.getElementById('ticker');
 const probList = document.getElementById('probList');
-const toggleSoundBtn = document.getElementById('toggleSound');
+const toggleInv = document.getElementById('toggleInv');
+const drawer = document.getElementById('drawer');
+const scrim = document.getElementById('scrim');
+const tabBtnCases = document.getElementById('tabBtnCases');
+const tabBtnPhone = document.getElementById('tabBtnPhone');
+const tabCases = document.getElementById('tab-cases');
+const tabPhone = document.getElementById('tab-phone');
 
-function rarityGlowClass(r){ return 'glow-'+r; }
-function rarityLabel(r){
-  return {common:'Обычный',rare:'Редкий',epic:'Эпический',legend:'Легендарный',mythic:'Мифический',godly:'Божественный',supreme:'Supreme',extra:'Extra'}[r] || r;
+const balanceEl = document.getElementById('balance');
+const caseInfoEl = document.getElementById('caseInfo');
+const recentEl = document.getElementById('recent');
+const lastDropEl = document.getElementById('lastDrop');
+
+const openBtn = document.getElementById('openCase');
+const fastBtn = document.getElementById('fastOpen');
+const autoFiveBtn = document.getElementById('autoFive');
+const viewProbBtn = document.getElementById('viewProb');
+
+const invEl = document.getElementById('inventory');
+const sellAllBtn = document.getElementById('sellAll');
+const closeDrawerBtn = document.getElementById('closeDrawer');
+const invSortSel = document.getElementById('invSort');
+const invSortDirBtn = document.getElementById('invSortDir');
+
+if(invSortSel){
+  invSortSel.value = state.invSort;
+  invSortSel.addEventListener('change', ()=>{
+    state.invSort = invSortSel.value;
+    saveState();
+    renderInventory();
+  });
+}
+if(invSortDirBtn){
+  invSortDirBtn.textContent = state.invSortDir === 'desc' ? 'Desc' : 'Asc';
+  invSortDirBtn.addEventListener('click', ()=>{
+    state.invSortDir = (state.invSortDir === 'desc' ? 'asc' : 'desc');
+    invSortDirBtn.textContent = state.invSortDir === 'desc' ? 'Desc' : 'Asc';
+    saveState();
+    renderInventory();
+  });
 }
 
+/* My Phone DOM */
+const slotCpu = document.getElementById('slot-cpu');
+const slotMem = document.getElementById('slot-mem');
+const slotCam = document.getElementById('slot-cam');
+const slotCol = document.getElementById('slot-col');
+const incomeStat = document.getElementById('incomeStat');
+const collectBtn = document.getElementById('collectBtn');
+const unequipAllBtn = document.getElementById('unequipAll');
+const equipHint = document.getElementById('equipHint');
+
+const picker = document.getElementById('picker');
+const pickerBack = picker.querySelector('.back');
+const pickerTitle = document.getElementById('pickerTitle');
+const pickerGrid = document.getElementById('pickerGrid');
+const pickerClose = document.getElementById('pickerClose');
+
+/* рендер: кейсы */
 function renderCases(){
   casesEl.innerHTML='';
   CASES.forEach(c=>{
@@ -385,326 +534,627 @@ function renderCases(){
         <strong>${c.name}</strong>
         <div class="muted" style="font-size:13px">Открыть: $${c.price}</div>
       </div>
-      <div class="muted" style="font-size:13px">${c.items.length} предметов</div>
+      <div class="muted" style="font-size:13px">Предметов: ${c.items.length}</div>
     `;
-    el.addEventListener('mousemove', e=>{
+    if(state.selectedCase === c.id) el.classList.add('active');
+    el.addEventListener('mousemove', (e)=>{
       const rect = el.getBoundingClientRect();
-      el.style.setProperty('--mx', ((e.clientX-rect.left)/rect.width*100)+'%');
+      el.style.setProperty('--mx', (e.clientX - rect.left) + 'px');
     });
-    el.onclick = ()=>{
-      state.selectedCase=c.id;
-      document.querySelectorAll('.case-btn').forEach(x=>x.classList.remove('active'));
-      el.classList.add('active');
-      document.getElementById('caseInfo').innerText =
-        c.items.map(it=>`${it.name} (${rarityLabel(it.rarity)}) — $${it.value}`).join('\n');
+    el.addEventListener('click', ()=>{
+      state.selectedCase = c.id;
       saveState();
-    };
+      document.querySelectorAll('.case-btn').forEach(b=>b.classList.remove('active'));
+      el.classList.add('active');
+      renderCaseInfo();
+      renderProbList();
+      // rebuild idle reel for selected case
+      buildIdleTicker();
+    });
     casesEl.appendChild(el);
-    if(c.id===state.selectedCase) el.classList.add('active');
   });
-  // авто заполнение инфо текущего
-  const sel = CASES.find(c=>c.id===state.selectedCase) || CASES[0];
-  document.getElementById('caseInfo').innerText =
-    sel.items.map(it=>`${it.name} (${rarityLabel(it.rarity)}) — $${it.value}`).join('\n');
 }
 
-function renderBalance(){ document.getElementById('balance').innerText = '$' + state.balance; }
+function getCaseById(id){ return CASES.find(c=>c.id===id) || CASES[0]; }
+
+/* рендеры инфо */
+function renderBalance(){ balanceEl.textContent = fmtMoney(state.balance); }
+function renderRecent(){
+  if(!state.recent.length){ recentEl.textContent = 'None'; lastDropEl.textContent = '—'; return; }
+  recentEl.textContent = state.recent.map(r=>`${r.name} (${rarityLabel(r.rarity)}) — ${fmtMoney(r.value)}`).join('\n');
+  lastDropEl.textContent = state.recent[0]?.name || '—';
+}
+function renderCaseInfo(){
+  const c = getCaseById(state.selectedCase);
+  const totalW = c.items.reduce((s,i)=>s+i.weight,0);
+  const parts = c.items.map(it=>{
+    const pct = (it.weight/totalW*100);
+    return `<div style="display:flex;align-items:center;gap:8px;margin:4px 0">
+      <div style="width:12px;height:12px;border-radius:3px;background:${it.color}"></div>
+      <div style="flex:1">
+        <div style="font-weight:600">${it.name}</div>
+        <div class="muted" style="font-size:12px">${rarityLabel(it.rarity)} • ${fmtMoney(it.value)} • ${pct.toFixed(3)}% • ${fmtMoney(it.income ?? it.value)} / мин
+</div>
+      </div>
+    </div>`;
+  }).join('');
+  caseInfoEl.innerHTML = `
+    <div class="muted">Cost open: ${fmtMoney(c.price)}</div>
+    <div style="margin-top:8px">${parts}</div>
+  `;
+}
+function renderProbList(){
+  const c = getCaseById(state.selectedCase);
+  const totalW = c.items.reduce((s,i)=>s+i.weight,0);
+  const lines = c.items.map(i=>`${i.name}: weight ${i.weight} (${(i.weight/totalW*100).toFixed(4)}%)`).join('\n');
+  probList.textContent = lines;
+}
+
+/* инвентарь */
+function makeUid(){ return Math.random().toString(36).slice(2)+Date.now().toString(36); }
+function toInvItem(base){
+  return {
+    uid: makeUid(),
+    id: base.id,
+    name: base.name,
+    rarity: base.rarity,
+    value: base.value,
+    income: base.income ?? base.value,
+    color: base.color,
+    img: base.img || '',
+    slot: slotOf(base),
+    equipped: false
+  };
+}
+function getInvItem(uid){ return state.inventory.find(i=>i.uid===uid) || null; }
+function removeInvItems(filterFn){
+  const removed = [];
+  state.inventory = state.inventory.filter(i=>{
+    const rm = filterFn(i);
+    if(rm) removed.push(i);
+    return !rm;
+  });
+  return removed;
+}
+const RARITY_ORDER = { extra:7, supreme:6, godly:5, mythic:4, legend:3, epic:2, rare:1, common:0 };
+
+function compareItems(a,b,mode,dir){
+  const mul = dir === 'desc' ? -1 : 1;
+  if(mode === 'rarity'){
+    const ra = RARITY_ORDER[a.rarity] ?? -1;
+    const rb = RARITY_ORDER[b.rarity] ?? -1;
+    if(ra !== rb) return (ra - rb) * mul;
+    // tie-breakers
+    if(a.slot !== b.slot) return (a.slot||'').localeCompare(b.slot||'') * mul;
+    return a.name.localeCompare(b.name) * mul;
+  }
+  if(mode === 'type'){
+    const ta = a.slot || '';
+    const tb = b.slot || '';
+    if(ta !== tb) return ta.localeCompare(tb) * mul;
+    if(a.rarity !== b.rarity) return ((RARITY_ORDER[a.rarity]??-1) - (RARITY_ORDER[b.rarity]??-1)) * mul;
+    return a.name.localeCompare(b.name) * mul;
+  }
+  if(mode === 'name'){
+    return a.name.localeCompare(b.name) * mul;
+  }
+  if(mode === 'value'){
+    if(a.value !== b.value) return (a.value - b.value) * mul;
+    return a.name.localeCompare(b.name) * mul;
+  }
+  // newest: по дате uid нельзя; лучше хранить ts. Если нет — используем порядок добавления как есть.
+  return 0;
+}
 
 function renderInventory(){
-  const inv = document.getElementById('inventory');
-  inv.innerHTML='';
-  if(state.inventory.length===0){
-    inv.innerHTML='<div class="muted">Инвентарь пуст</div>'; return;
+  invEl.innerHTML = '';
+  if(!state.inventory.length){
+    invEl.innerHTML = `<div class="muted">Inventory none</div>`;
+    return;
   }
-  state.inventory.forEach((it,idx)=>{
-    const row = document.createElement('div'); row.className='item';
-    row.style.borderLeft = `3px solid ${it.color || 'rgba(255,255,255,0.2)'}`;
+
+  // сортировка
+  const mode = state.invSort;
+  const dir = state.invSortDir;
+  let list = state.inventory.slice(); // копия
+
+  // если нет явной сортировки — по умолчанию newest: последние сверху
+  if(mode === 'newest'){
+    if(dir === 'asc') list = list.slice(); else list = list.slice().reverse();
+  }else{
+    list.sort((a,b)=>compareItems(a,b,mode,dir));
+  }
+
+  list.forEach(it=>{
+    const row = document.createElement('div');
+    row.className = 'item';
     row.innerHTML = `
-      <div style="display:flex;align-items:center;gap:10px">
-        <img src="${it.img}" alt="" style="width:56px;height:56px;object-fit:contain;display:block">
-        <div>
-          <div style="font-weight:700">${it.name}</div>
-          <div class="row" style="gap:6px">
-            <span class="rarity-badge">${rarityLabel(it.rarity)}</span>
-            <span class="muted">$${it.value}</span>
-          </div>
+      <div style="display:flex;align-items:center;gap:10px;min-width:0">
+        <div style="width:46px;height:46px;border-radius:10px;background:rgba(255,255,255,.04);display:flex;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,.06)">
+          ${it.img ? `<img src="${it.img}" alt="" style="width:36px;height:36px;object-fit:contain">` : ''}
+        </div>
+        <div style="min-width:0">
+          <div style="font-weight:600">${it.name}</div>
+          <div class="muted" style="font-size:12px">${rarityLabel(it.rarity)} • ${it.slot ? it.slot.toUpperCase() : '—'}</div>
         </div>
       </div>
-      <div class="row" style="gap:8px">
-        <button class="btn-ghost sell-btn">Продать</button>
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end">
+        <span class="rarity-badge">${fmtMoney(it.value)}</span>
+        ${it.equipped ? `<span class="item-eq">Equipped</span>` : ''}
+        ${it.slot ? `<button class="btn-ghost btn-eq">${it.equipped ? 'Unequip' : 'Equip'}</button>` : ''}
+        <button class="btn-danger btn-sell"${it.equipped ? ' disabled' : ''}>Sell</button>
       </div>
     `;
-    row.querySelector('.sell-btn').onclick = ()=>{
-      state.balance += it.value;
-      state.inventory.splice(idx,1);
-      state.recent.push(`Продан ${it.name} за $${it.value}`);
-      if(state.recent.length>50) state.recent.shift();
-      saveState(); renderAll();
-    };
-    inv.appendChild(row);
-  });
-}
-
-function renderRecent(){
-  document.getElementById('recent').innerText = state.recent.slice(-8).reverse().join('\n') || 'Пусто';
-  document.getElementById('lastDrop').innerText = state.recent.length? state.recent[state.recent.length-1] : '—';
-}
-
-function buildProbList(){
-  probList.innerHTML='';
-  CASES.forEach(c=>{
-    const s = c.items.map(it=>`${rarityLabel(it.rarity).toUpperCase()} ${it.name}: ${it.weight}%`).join('\n');
-    probList.innerText += `${c.name} — $${c.price}\n ${s}\n\n`;
-  });
-}
-
-function renderAll(){ renderBalance(); renderInventory(); renderRecent(); }
-
-/* анимация тикера */
-let animating = false;
-function buildTicker(caseDef, chosenItem, chosenIndex, slotsCount=120){
-  ticker.innerHTML = '';
-  const pool = [];
-  // упрощённое наполнение для разнообразия визуала
-  caseDef.items.forEach(it=>{
-    const reps = Math.max(1, Math.round(it.weight/2));
-    for(let k=0;k<reps;k++) pool.push(it);
-  });
-  for(let i=0;i<slotsCount;i++){
-    const it = (i===chosenIndex) ? chosenItem : pool[Math.floor(Math.random()*pool.length)];
-    const node = document.createElement('div'); node.className='slot '+rarityGlowClass(it.rarity);
-    node.innerHTML = `
-      <div style="text-align:center">
-        <img src="${it.img}" alt="" style="width:100px;height:100px;object-fit:contain;display:block;margin:0 auto 6px; filter: drop-shadow(0 6px 10px rgba(0,0,0,.35))">
-        <div class='title'>${it.name}</div>
-        <div class='muted rar'>${rarityLabel(it.rarity)}</div>
-      </div>
-    `;
-    node.style.background = it.color || '#071826';
-    ticker.appendChild(node);
-  }
-}
-
-function easeOutCubic(t){ return 1 - Math.pow(1 - t, 3); }
-
-async function animateToIndex(chosenIndex, duration=1300){
-  return new Promise((resolve)=>{
-    const slot = ticker.querySelector('.slot'); if(!slot){ resolve(); return; }
-    const slotWidth = slot.getBoundingClientRect().width + 16;
-    const containerCenter = opener.getBoundingClientRect().width / 2;
-    const targetCenterX = chosenIndex * slotWidth + slotWidth/2;
-    const startX = 0;
-    const targetX = containerCenter - targetCenterX;
-
-    const startTime = performance.now();
-    const endTime = startTime + duration;
-
-    function frame(now){
-      const t = Math.min(1, Math.max(0, (now - startTime) / duration));
-      const eased = easeOutCubic(t);
-      const curX = startX + (targetX - startX) * eased;
-      ticker.style.transform = `translateX(${curX}px)`;
-      if(now < endTime){ requestAnimationFrame(frame); } else { ticker.style.transform = `translateX(${targetX}px)`; resolve(); }
+    const eqBtn = row.querySelector('.btn-eq');
+    if(eqBtn){
+      eqBtn.addEventListener('click', ()=>{
+        if(it.equipped){
+          unequipByUid(it.uid);
+        }else{
+          equipUidToSlot(it.uid, it.slot);
+        }
+      });
     }
-    requestAnimationFrame(frame);
-  });
-}
-
-/* эффекты: звук + конфетти */
-let audioCtx = null;
-function playTone(freq=660, dur=0.12, type='sine', vol=0.05){
-  if(!state.sound) return;
-  try{
-    audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
-    const o = audioCtx.createOscillator();
-    const g = audioCtx.createGain();
-    o.type = type; o.frequency.value = freq;
-    g.gain.value = vol;
-    o.connect(g); g.connect(audioCtx.destination);
-    o.start();
-    g.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + dur);
-    o.stop(audioCtx.currentTime + dur + 0.02);
-  }catch(e){}
-}
-function playDropSound(rarity){
-  const map = {
-    common:[420,'sine',0.05],
-    rare:[520,'sine',0.06],
-    epic:[660,'triangle',0.07],
-    legend:[800,'triangle',0.08],
-    mythic:[880,'square',0.08],
-    godly:[980,'square',0.09],
-    supreme:[1080,'sawtooth',0.10],
-    extra:[1180,'sawtooth',0.12]
-  };
-  const [f,type,vol] = map[rarity] || [600,'sine',0.06];
-  playTone(f, 0.16, type, vol);
-  setTimeout(()=>playTone(f*1.25, 0.14, type, vol*0.9), 80);
-}
-
-// простое конфетти
-function fireConfetti(power=1){
-  const canvas = document.createElement('canvas');
-  canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-  canvas.style.cssText='position:fixed;inset:0;pointer-events:none;z-index:9';
-  document.body.appendChild(canvas);
-  const ctx = canvas.getContext('2d');
-  const colors = ['#ffb84d','#58a6ff','#50e3a4','#ff6b6b','#9EA179','#8B7198','#12306C'];
-  const count = Math.min(220, Math.floor(80*power));
-  const parts = Array.from({length:count}, ()=>({
-    x: Math.random()*canvas.width,
-    y: -20 - Math.random()*80,
-    w: 6+Math.random()*6, h: 10+Math.random()*10,
-    vx: -2 + Math.random()*4,
-    vy: 2 + Math.random()*3 + 2*power,
-    rot: Math.random()*Math.PI, vr:(-0.2+Math.random()*0.4),
-    color: colors[Math.floor(Math.random()*colors.length)],
-    life: 100 + Math.random()*60
-  }));
-  let anim;
-  const step = ()=>{
-    ctx.clearRect(0,0,canvas.width,canvas.height);
-    parts.forEach(p=>{
-      p.x += p.vx; p.y += p.vy; p.rot += p.vr; p.vy += 0.05;
-      p.life -= 1;
-      ctx.save();
-      ctx.translate(p.x,p.y);
-      ctx.rotate(p.rot);
-      ctx.fillStyle=p.color;
-      ctx.globalAlpha=Math.max(0, p.life/140);
-      ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);
-      ctx.restore();
+    row.querySelector('.btn-sell').addEventListener('click', ()=>{
+      if(it.equipped) return;
+      const removed = removeInvItems(x=>x.uid===it.uid);
+      if(removed.length){
+        state.balance += it.value;
+        state.recent.unshift({name:`Sell: ${it.name}`, value:it.value, rarity:it.rarity});
+        state.recent = state.recent.slice(0,30);
+        saveState();
+        renderBalance();
+        renderRecent();
+        renderInventory();
+        renderPhone();
+      }
     });
-    if(parts.some(p=>p.life>0 && p.y<canvas.height+40)){
-      anim = requestAnimationFrame(step);
-    }else{
-      cancelAnimationFrame(anim);
-      canvas.remove();
-    }
-  };
-  step();
+    invEl.appendChild(row);
+  });
 }
 
-/* открыть кейс */
-async function openCase({fast=false}={}){
-  if(animating) return;
-  const caseDef = CASES.find(c=>c.id===state.selectedCase); if(!caseDef) return;
-  if(state.balance < caseDef.price){ alert('Недостаточно средств'); return; }
 
-  state.balance -= caseDef.price; renderBalance(); saveState();
-  animating = true;
-  setButtonsDisabled(true);
+/* drawer controls */
+function openDrawer(){ drawer.classList.add('open'); scrim.classList.add('show'); }
+function closeDrawer(){ drawer.classList.remove('open'); scrim.classList.remove('show'); }
 
-  const chosen = weightedPick(caseDef.items);
-  const slotsCount = 120; const chosenIndex = Math.floor(slotsCount * 0.7) + Math.floor(Math.random()*8);
-  buildTicker(caseDef, chosen, chosenIndex, slotsCount);
+/* РУЛЕТКА: стабильная анимация с точной остановкой */
+let spinning = false;
 
-  await new Promise(r=>setTimeout(r, 30));
-  const duration = fast ? 650 : (900 + Math.random()*3800);
-  await animateToIndex(chosenIndex, duration);
-
-  if (!fast) { await new Promise(res => setTimeout(res, 450)); }
-
-  // finalize
-  state.inventory.push({id: chosen.id + '_' + Date.now(), name: chosen.name, rarity: chosen.rarity, value: chosen.value, color: chosen.color, img: chosen.img});
-  state.recent.push(`Выпало: ${chosen.name} — $${chosen.value}`);
-  if(state.recent.length>50) state.recent.shift();
-  saveState(); renderAll();
-
-  // эффекты
-  playDropSound(chosen.rarity);
-  const powerMap = {common:.5,rare:.7,epic:1,legend:1.2,mythic:1.5,godly:1.8,supreme:2,extra:2.2};
-  fireConfetti(powerMap[chosen.rarity] || 1);
-
-  // reset
-  setTimeout(()=>{
-    ticker.style.transform='translateX(0px)';
-    ticker.innerHTML='';
-    animating=false;
-    setButtonsDisabled(false);
-  }, 320);
-}
-
-function setButtonsDisabled(v){
-  document.getElementById('openCase').disabled = v;
-  document.getElementById('fastOpen').disabled = v;
-  document.getElementById('autoFive').disabled = v;
-}
-
-/* кнопки и события */
-document.getElementById('openCase').onclick = ()=>openCase({fast:false});
-document.getElementById('fastOpen').onclick = ()=>openCase({fast:true});
-document.getElementById('autoFive').onclick = async ()=>{
-  if(animating) return;
-  setButtonsDisabled(true);
-  for(let i=0;i<9;i++){
-    const caseDef = CASES.find(c=>c.id===state.selectedCase);
-    if(!caseDef || state.balance < caseDef.price) break;
-    await openCase({fast:true});
-    await new Promise(r=>setTimeout(r, 200));
+function buildIdleTicker(){
+  ticker.innerHTML = '';
+  const c = getCaseById(state.selectedCase);
+  const pool = c.items;
+  const seqLen = 20;
+  for(let i=0;i<seqLen;i++){
+    appendSlot(pool[Math.floor(Math.random()*pool.length)]);
   }
-  setButtonsDisabled(false);
-};
-document.getElementById('sellAll').onclick = ()=>{
-  const sum = state.inventory.reduce((s,i)=>s+i.value,0);
-  if(sum===0){ alert('Нет предметов'); return; }
-  state.balance += sum; state.inventory = [];
-  state.recent.push(`Продано всё за $${sum}`);
-  if(state.recent.length>50) state.recent.shift();
-  saveState(); renderAll();
-};
-document.getElementById('viewProb').onclick = ()=>{
-  probList.style.display = probList.style.display==='none' ? 'block' : 'none';
-};
-toggleSoundBtn.onclick = ()=>{
-  state.sound = !state.sound; saveState();
-  toggleSoundBtn.textContent = (state.sound?'🔊':'🔇') + ' ' + 'Звук';
+  resetTickerTransform();
+}
+
+function appendSlot(it){
+  const slot = document.createElement('div');
+  slot.className = `slot ${rarityGlowClass(it.rarity)}`;
+  slot.innerHTML = `
+    <div>
+      ${it.img ? `<img src="${it.img}" alt="" style="width:86px;height:86px;object-fit:contain;display:block;margin:0 auto 6px">` : ''}
+      <div class="title">${it.name}</div>
+      <div class="rar muted rar-${it.rarity}">${rarityLabel(it.rarity)}</div>
+    </div>
+  `;
+  ticker.appendChild(slot);
+}
+
+function getSlotWidth(){
+  const el = ticker.querySelector('.slot');
+  if(!el) return 156;
+  const rect = el.getBoundingClientRect();
+  // .slot has margin: 0 8px
+  return Math.round(rect.width + 16);
+}
+function resetTickerTransform(){
+  ticker.style.transition = 'none';
+  ticker.style.transform = 'translateX(0px)';
+  void ticker.offsetHeight; // force reflow
+}
+
+function buildTickerForWin(win){
+  ticker.innerHTML = '';
+  const c = getCaseById(state.selectedCase);
+  const pool = c.items;
+  const before = 25; // префикс для длины пути
+  const after = 10;
+  const seq = [];
+  for(let i=0;i<before;i++) seq.push(pool[Math.floor(Math.random()*pool.length)]);
+  seq.push(win);
+  for(let i=0;i<after;i++) seq.push(pool[Math.floor(Math.random()*pool.length)]);
+  seq.forEach(appendSlot);
+  return { stopIndex: before };
+}
+
+function animateToStopIndex(stopIndex, {fast=false}={}){
+  const duration = fast ? 700 : 3000;
+  const easing = 'cubic-bezier(.08,.6,0,1)';
+  const slotW = getSlotWidth();
+  const viewportCenterOffset = opener.clientWidth/2 - (slotW/2);
+  // старт всегда из нуля — предварительно сброшено
+  const targetX = -(stopIndex * slotW) + viewportCenterOffset;
+
+  // защита: отключаем кнопки на время
+  setSpinUI(true);
+
+  requestAnimationFrame(()=>{
+    ticker.style.transition = `transform ${duration}ms ${easing}`;
+    ticker.style.transform = `translateX(${targetX}px)`;
+  });
+
+  setTimeout(()=>{
+    setSpinUI(false);
+    // подсветка центрального слота
+    const slots = Array.from(ticker.children);
+    const el = slots[stopIndex];
+    if(el){ el.classList.add('win'); setTimeout(()=>el.classList.remove('win'), 1500); }
+  }, duration + 30);
+}
+
+function setSpinUI(spin){
+  spinning = spin;
+  openBtn.disabled = spin;
+  fastBtn.disabled = spin;
+  autoFiveBtn.disabled = spin;
+}
+
+/* открытие кейса */
+function canOpen(c){ return state.balance >= c.price && !spinning; }
+function doRoll(c, {fast=false}={}){
+  if(!canOpen(c)) return null;
+  state.balance -= c.price;
+  const win = weightedPick(c.items);
+  const invItem = toInvItem(win);
+  state.inventory.push(invItem);
+  state.recent.unshift(win);
+  state.recent = state.recent.slice(0,30);
+  saveState();
+  renderBalance();
+  renderRecent();
+  renderInventory();
+
+  // визуал: строим ленту с точкой остановки ровно на выигрыше
+  resetTickerTransform();
+  const { stopIndex } = buildTickerForWin(win);
+  animateToStopIndex(stopIndex, {fast});
+  return {win, invItem};
+}
+
+/* picker */
+let currentPickSlot = null;
+function openPickerForSlot(slot){
+  currentPickSlot = slot;
+  pickerTitle.textContent = `Choose: ${slot.toUpperCase()}`;
+  pickerGrid.innerHTML = '';
+  const items = state.inventory.filter(i=>i.slot===slot);
+  if(!items.length){
+    pickerGrid.innerHTML = `<div class="muted">None items</div>`;
+  }else{
+    items.slice().reverse().forEach(it=>{
+      const card = document.createElement('div');
+      card.className = 'slot-card';
+      card.innerHTML = `
+        ${it.img ? `<img src="${it.img}" alt="">` : `<div class="placeholder">?</div>`}
+        <div style="flex:1;min-width:0">
+          <div style="font-weight:600">${it.name}</div>
+          <div class="muted" style="font-size:12px">${rarityLabel(it.rarity)} • ${fmtMoney(it.value)}</div>
+          <div style="display:flex;gap:8px;align-items:center;margin-top:6px;flex-wrap:wrap">
+            ${it.equipped ? `<span class="item-eq">Equiped</span>` : ''}
+            <button class="btn-primary btn-choose"${it.equipped ? ' disabled' : ''}>Equip</button>
+          </div>
+        </div>
+      `;
+      card.querySelector('.btn-choose')?.addEventListener('click', ()=>{
+        equipUidToSlot(it.uid, slot);
+        closePicker();
+      });
+      pickerGrid.appendChild(card);
+    });
+  }
+  picker.classList.add('show');
+}
+function closePicker(){ picker.classList.remove('show'); currentPickSlot = null; }
+
+function equipUidToSlot(uid, slot){
+  const prevUid = state.phone[slot];
+  if(prevUid){
+    const prev = getInvItem(prevUid);
+    if(prev) prev.equipped = false;
+  }
+  const it = getInvItem(uid);
+  if(!it) return;
+  it.equipped = true;
+  state.phone[slot] = uid;
+  saveState();
+  renderInventory();
+  renderPhone();
+}
+function unequipByUid(uid){
+  const it = getInvItem(uid);
+  if(!it) return;
+  it.equipped = false;
+  for(const s of ['cpu','mem','cam','col']){
+    if(state.phone[s] === uid) state.phone[s] = null;
+  }
+  saveState();
+  renderInventory();
+  renderPhone();
+}
+function unequipAll(){
+  ['cpu','mem','cam','col'].forEach(s=>{
+    const uid = state.phone[s];
+    if(uid){
+      const it = getInvItem(uid);
+      if(it) it.equipped = false;
+      state.phone[s] = null;
+    }
+  });
+
+  saveState();
+  renderInventory();
+  renderPhone();
+}
+
+/* доход My Phone */
+const MULT_BY_RARITY = {
+  common: 1.0, rare: 1.2, epic: 1.6, legend: 2.2, mythic: 5, godly: 12, supreme: 20, extra: 50
 };
 
-/* горячие клавиши */
-window.addEventListener('keydown', (e)=>{
-  if(e.code==='Space'){ e.preventDefault(); openCase({fast:false}); }
-  if(e.key==='f' || e.key==='F'){ e.preventDefault(); openCase({fast:true}); }
+function coolingOk(cpuItem, colItem){
+  // Доход только если оба есть и редкости совпадают
+  if(!cpuItem || !colItem) return false;
+  return cpuItem.rarity === colItem.rarity;
+}
+
+function calcIncome(){
+  const cpu = state.phone.cpu ? getInvItem(state.phone.cpu) : null;
+  const mem = state.phone.mem ? getInvItem(state.phone.mem) : null;
+  const cam = state.phone.cam ? getInvItem(state.phone.cam) : null;
+  const col = state.phone.col ? getInvItem(state.phone.col) : null;
+
+  const base = cpu ? (cpu.income ?? cpu.value) : 0;
+  const mMem = mem ? (MULT_BY_RARITY[mem.rarity] || 1) : 1;
+  const mCam = cam ? (MULT_BY_RARITY[cam.rarity] || 1) : 1;
+  const ok = coolingOk(cpu, col);
+  const perMinute = ok ? Math.floor(base * mMem * mCam) : 0;
+
+  return { base, mMem, mCam, perMinute, overheat: !ok };
+}
+
+function renderPhone(){
+  const cpu = state.phone.cpu ? getInvItem(state.phone.cpu) : null;
+  const mem = state.phone.mem ? getInvItem(state.phone.mem) : null;
+  const cam = state.phone.cam ? getInvItem(state.phone.cam) : null;
+  const col = state.phone.col ? getInvItem(state.phone.col) : null;
+
+  function slotHtml(label, it, slot){
+    if(it){
+      return `
+        ${it.img ? `<img src="${it.img}" alt="">` : `<div class="placeholder">?</div>`}
+        <div style="flex:1">
+          <div style="font-weight:700">${label}</div>
+          <div>${it.name}</div>
+          <div class="muted" style="font-size:12px">${rarityLabel(it.rarity)} • ${fmtMoney(it.value)}</div>
+        </div>
+        <button class="btn-ghost btn-change">Replace</button>
+        <button class="btn-danger btn-uneq">Unequip</button>
+      `;
+    }else{
+      return `
+        <div class="placeholder">?</div>
+        <div style="flex:1">
+          <div style="font-weight:700">${label}</div>
+          <div class="muted" style="font-size:12px">Not selected</div>
+        </div>
+        <button class="btn-primary btn-pick">Choose</button>
+      `;
+    }
+  }
+
+  slotCpu.innerHTML = slotHtml('Processor', cpu, 'cpu');
+  slotMem.innerHTML = slotHtml('Storage', mem, 'mem');
+  slotCam.innerHTML = slotHtml('Camera', cam, 'cam');
+  slotCol.innerHTML = slotHtml('Cooler', col, 'col');
+
+  // pick
+  slotCpu.querySelector('.btn-pick')?.addEventListener('click', ()=>openPickerForSlot('cpu'));
+  slotMem.querySelector('.btn-pick')?.addEventListener('click', ()=>openPickerForSlot('mem'));
+  slotCam.querySelector('.btn-pick')?.addEventListener('click', ()=>openPickerForSlot('cam'));
+  slotCol.querySelector('.btn-pick')?.addEventListener('click', ()=>openPickerForSlot('col'));
+  // change
+  slotCpu.querySelector('.btn-change')?.addEventListener('click', ()=>openPickerForSlot('cpu'));
+  slotMem.querySelector('.btn-change')?.addEventListener('click', ()=>openPickerForSlot('mem'));
+  slotCam.querySelector('.btn-change')?.addEventListener('click', ()=>openPickerForSlot('cam'));
+  slotCol.querySelector('.btn-change')?.addEventListener('click', ()=>openPickerForSlot('col'));
+  // unequip
+  slotCpu.querySelector('.btn-uneq')?.addEventListener('click', ()=>{ if(cpu) unequipByUid(cpu.uid); });
+  slotMem.querySelector('.btn-uneq')?.addEventListener('click', ()=>{ if(mem) unequipByUid(mem.uid); });
+  slotCam.querySelector('.btn-uneq')?.addEventListener('click', ()=>{ if(cam) unequipByUid(cam.uid); });
+  slotCol.querySelector('.btn-uneq')?.addEventListener('click', ()=>{ if(col) unequipByUid(col.uid); });
+
+  const {base, mMem, mCam, perMinute, overheat} = calcIncome();
+  const tenMin = perMinute * 10;
+  const oneHour = perMinute * 60;
+  const twentyFourHours = perMinute * 1440;
+
+  incomeStat.innerHTML = `
+    Base income: ${fmtMoney(base)} / Boosts: ${mMem.toFixed(2)} × ${mCam.toFixed(2)} / Total per min: ${fmtMoney(perMinute)}
+    <div class="muted" style="margin-top:6px">
+      📈 Forecast:
+      <b>${fmtMoney(tenMin)}</b> / 10 min,
+      <b>${fmtMoney(oneHour)}</b> / 1 h,
+      <b>${fmtMoney(twentyFourHours)}</b> / 24 h
+    </div>
+    ${overheat ? `<div class="badge-warn" style="display:inline-block;margin-top:6px">Overheating: set a matching cooler to CPU rarity to enable income</div>` : ``}
+  `;
+
+  equipHint.textContent = (cpu && mem && cam && col)
+    ? 'Ready! Click «Collect»'
+    : 'PS: choose details in inventory. Equiped items dont sell.';
+}
+
+
+/* Автокапание дохода раз в минуту + сбор по кнопке */
+function settleIncome(reason = 'Autofarm'){
+  const { perMinute } = calcIncome();
+  const now = Date.now();
+  const last = state.phoneProg.lastAccrual || now;
+  const minsPassed = Math.floor((now - last)/60000);
+
+  if(perMinute > 0 && minsPassed > 0){
+    const income = perMinute * minsPassed;
+    state.balance += income;
+    state.phoneProg.lastAccrual = last + minsPassed * 60000;
+    state.recent.unshift({ name: `${reason} (${minsPassed} min)`, value: income, rarity: 'rare' });
+    state.recent = state.recent.slice(0, 30);
+    saveState();
+    renderBalance();
+    renderRecent();
+  }
+}
+
+// проверка каждые 5 секунд, чтобы начислить целые минуты
+setInterval(()=> settleIncome('Autofarm'), 5000);
+
+/* События */
+openBtn.addEventListener('click', ()=>{
+  const c = getCaseById(state.selectedCase);
+  if(!canOpen(c)) return;
+  doRoll(c, {fast:false});
+});
+fastBtn.addEventListener('click', ()=>{
+  const c = getCaseById(state.selectedCase);
+  if(!canOpen(c)) return;
+  doRoll(c, {fast:true});
+});
+autoFiveBtn.addEventListener('click', async ()=>{
+  const c = getCaseById(state.selectedCase);
+  for(let i=0;i<10;i++){
+    if(!canOpen(c)) break;
+    doRoll(c, {fast:true});
+    await new Promise(r=>setTimeout(r, 220));
+  }
 });
 
-/* начальный рендер */
-buildProbList(); renderCases(); renderAll();
-toggleSoundBtn.textContent = (state.sound?'🔊':'🔇') + ' ' + 'Звук';
+viewProbBtn.addEventListener('click', ()=>{
+  const isShown = probList.style.display !== 'none';
+  probList.style.display = isShown ? 'none' : 'block';
+  if(!isShown) renderProbList();
+});
 
-/* фоновые частицы */
-(function particles(){
-  const c = document.getElementById('bg'); const ctx = c.getContext('2d');
-  let W = c.width = window.innerWidth, H = c.height = window.innerHeight;
-  const dots = Array.from({length: 48}, ()=>({
-    x: Math.random()*W, y: Math.random()*H,
-    r: Math.random()*1.6 + 0.4,
-    vx: (-0.15 + Math.random()*0.3), vy: (-0.15 + Math.random()*0.3),
-    a: Math.random()*1
-  }));
-  function draw(){
-    ctx.clearRect(0,0,W,H);
-    dots.forEach(d=>{
-      d.x += d.vx; d.y += d.vy; d.a += 0.003;
-      if(d.x<0) d.x=W; if(d.x>W) d.x=0;
-      if(d.y<0) d.y=H; if(d.y>H) d.y=0;
-      const glow = (Math.sin(d.a)*0.35+0.65);
+toggleInv.addEventListener('click', openDrawer);
+closeDrawerBtn.addEventListener('click', closeDrawer);
+scrim.addEventListener('click', closeDrawer);
+
+sellAllBtn.addEventListener('click', ()=>{
+  const toSell = state.inventory.filter(i=>!i.equipped);
+  if(!toSell.length) return;
+  const sum = toSell.reduce((s,i)=>s+i.value,0);
+  removeInvItems(i=>!i.equipped);
+  state.balance += sum;
+  state.recent.unshift({name:`Sell total (${toSell.length})`, value:sum, rarity:'common'});
+  state.recent = state.recent.slice(0,30);
+  saveState();
+  renderBalance();
+  renderRecent();
+  renderInventory();
+  renderPhone();
+});
+
+collectBtn.addEventListener('click', ()=>{
+  // насильно «дособрать» все целые минуты прямо сейчас
+  settleIncome('Collect income');
+});
+unequipAllBtn.addEventListener('click', unequipAll);
+
+pickerBack.addEventListener('click', closePicker);
+pickerClose.addEventListener('click', closePicker);
+
+tabBtnCases.addEventListener('click', ()=>{
+  tabBtnCases.classList.add('active');
+  tabBtnPhone.classList.remove('active');
+  tabCases.style.display = '';
+  tabPhone.style.display = 'none';
+});
+tabBtnPhone.addEventListener('click', ()=>{
+  tabBtnPhone.classList.add('active');
+  tabBtnCases.classList.remove('active');
+  tabPhone.style.display = '';
+  tabCases.style.display = 'none';
+});
+
+document.addEventListener('keydown', (e)=>{
+  if(e.repeat) return;
+  if(e.code === 'Space'){
+    e.preventDefault();
+    openBtn.click();
+  }else if(e.code === 'KeyF'){
+    e.preventDefault();
+    fastBtn.click();
+  }else if(e.code === 'KeyI'){
+    e.preventDefault();
+    openDrawer();
+  }else if(e.code === 'Escape'){
+    if(picker.classList.contains('show')) closePicker();
+    else if(scrim.classList.contains('show')) closeDrawer();
+  }
+});
+
+/* Инициализация */
+function init(){
+  renderCases();
+  renderCaseInfo();
+  renderProbList();
+  renderInventory();
+  renderRecent();
+  renderBalance();
+  renderPhone();
+  buildIdleTicker();
+  settleIncome('Autofarm');
+  // синхронизировать селект и кнопку с состоянием
+  if(invSortSel) invSortSel.value = state.invSort;
+  if(invSortDirBtn) invSortDirBtn.textContent = state.invSortDir === 'desc' ? 'Desc' : 'Asc';
+}
+init();
+
+/* Фон (звёзды) */
+(function bg(){
+  const cvs = document.getElementById('bg');
+  const ctx = cvs.getContext('2d');
+  let w=0,h=0, stars=[];
+  function resize(){
+    w = cvs.width = window.innerWidth;
+    h = cvs.height = window.innerHeight;
+    stars = Array.from({length: Math.min(120, Math.floor(w*h/15000))}, ()=>({
+      x: Math.random()*w,
+      y: Math.random()*h,
+      r: Math.random()*1.2+0.3,
+      a: Math.random()*0.6+0.2,
+      s: Math.random()*0.4+0.1
+    }));
+  }
+  window.addEventListener('resize', resize);
+  resize();
+  function tick(){
+    ctx.clearRect(0,0,w,h);
+    stars.forEach(st=>{
+      st.x += st.s*0.15;
+      if(st.x > w+5) st.x = -5;
       ctx.beginPath();
-      ctx.fillStyle = `rgba(160,200,255,${0.25*glow})`;
-      ctx.arc(d.x,d.y,d.r*glow,0,Math.PI*2);
+      ctx.arc(st.x, st.y, st.r, 0, Math.PI*2);
+      ctx.fillStyle = `rgba(168,197,255,${st.a})`;
       ctx.fill();
     });
-    requestAnimationFrame(draw);
+    requestAnimationFrame(tick);
   }
-  draw();
-  window.addEventListener('resize', ()=>{ W = c.width = window.innerWidth; H = c.height = window.innerHeight; });
+  tick();
 })();
-
-/* ховер координаты для подсветки кейсов */
-casesEl.addEventListener('mousemove', (e)=>{
-  const t = e.target.closest('.case-btn'); if(!t) return;
-  const rect = t.getBoundingClientRect();
-  t.style.setProperty('--mx', ((e.clientX-rect.left)/rect.width*100)+'%');
-});
 </script>
 </body>
 </html>
